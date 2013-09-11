@@ -40,14 +40,12 @@ class Command(BaseCommand):
 
         if not args:
             log.error("Cron called but doesn't know what to do.")
-            print 'Try one of these:\n%s' % '\n'.join(sorted(registered))
             sys.exit(1)
 
         script, args = args[0], args[1:]
         if script not in registered:
             log.error("Cron called with unrecognized command: %s %s" %
                       (script, args))
-            print 'Unrecognized name: %s' % script
             sys.exit(1)
 
         # Acquire lock if needed.
