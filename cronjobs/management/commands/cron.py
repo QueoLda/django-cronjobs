@@ -15,7 +15,7 @@ import cronjobs
 log = logging.getLogger('cron')
 
 LOCK = getattr(settings, 'CRONJOB_LOCK_PREFIX', 'lock')
-
+DEBUG = getattr(settings, 'DEBUG', False)
 
 class Command(BaseCommand):
     help = 'Run a script, often a cronjob'
@@ -40,12 +40,16 @@ class Command(BaseCommand):
 
         if not args:
             log.error("Cron called but doesn't know what to do.")
+            if DEBUG:
+                sys.stdout.write('Try one of these:\n%s\n' % '\n'.join(sorted(registered)))
             sys.exit(1)
 
         script, args = args[0], args[1:]
         if script not in registered:
             log.error("Cron called with unrecognized command: %s %s" %
                       (script, args))
+            if DEBUG:
+                sys.stdout.write('Unrecognized name: %s\n' % script)
             sys.exit(1)
 
         # Acquire lock if needed.
