@@ -68,5 +68,8 @@ class Command(BaseCommand):
                 sys.exit(1)
 
         log.info("Beginning job: %s %s" % (script, args))
-        registered[script](*args)
+        try:
+            registered[script](*args)
+        except Exception as e:
+            log.error('Task %s raised exception %s' % (script, e))
         log.info("Ending job: %s %s" % (script, args))
