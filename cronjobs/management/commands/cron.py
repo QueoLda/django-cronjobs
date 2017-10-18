@@ -4,9 +4,9 @@ import os
 import sys
 import imp
 import tempfile
+from importlib import import_module
 
 from django.conf import settings
-from django.utils.importlib import import_module
 from django.core.management.base import BaseCommand
 
 import cronjobs
