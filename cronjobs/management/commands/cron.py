@@ -21,6 +21,9 @@ class Command(BaseCommand):
     help = 'Run a script, often a cronjob'
     args = '[name args...]'
 
+    def add_arguments(self, parser):
+        parser.add_argument('argz', nargs='+')
+
     def handle(self, *args, **opts):
         # Load up all the cron scripts.
         for app in settings.INSTALLED_APPS:
@@ -38,13 +41,15 @@ class Command(BaseCommand):
 
         registered = cronjobs.registered
 
-        if not args:
+        if not args and not opts['argz']:
             log.error("Cron called but doesn't know what to do.")
             if DEBUG:
                 sys.stdout.write('Try one of these:\n%s\n' % '\n'.join(sorted(registered)))
             sys.exit(1)
 
-        script, args = args[0], args[1:]
+        argz = opts['argz']
+
+        script, args = argz[0], argz[1:]
         if script not in registered:
             log.error("Cron called with unrecognized command: %s %s" %
                       (script, args))
